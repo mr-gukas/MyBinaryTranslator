@@ -1,0 +1,3 @@
+[submodule "MyLanguage"]
+	path = MyLanguage
+	url = git@github.com:mr-gukas/MyLanguage.git
