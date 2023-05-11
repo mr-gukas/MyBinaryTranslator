@@ -1,1 +1,0 @@
-{ ST { FUNC { "main" { NIL } { TYPE } } { ST { IF { 1 } { ST { VAR { "u" } { 1 } } { NIL } } { ST { RET { 0 } { NIL } } { NIL } } } } { NIL } } 

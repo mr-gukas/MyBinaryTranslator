@@ -1,20 +1,32 @@
 #include "LOG.h"
+   
+#ifdef DEBUG_MODE 
+    FILE* log_file = startLog(LOG_NAME);
+#endif
 
-FILE* startLog(FILE* LogFile)
-{
-    LogFile = fopen(PRINT_FILE, "a+");
+FILE* startLog(const char* filename) {
+    if (filename == NULL) return NULL;
 
-    fprintf(LogFile, "<pre>\n");
-    fprintf(LogFile, "<p style=\"font-size:20px\">\n");
+    char dir_name[FILE_NAME_SIZE] = {};
+    sprintf(dir_name, "%s%s", LOG_DIR, filename);
+    
+    FILE* log_file = fopen(dir_name, "a+");
 
-    fprintf(LogFile, "---------------------------Started logging---------------------------------\n");
-    printTime(LogFile);
+    if (log_file == NULL) {
+        fprintf(stderr, "Can't open log file\n");
+        return NULL;
+    }
 
-    return LogFile;
+    fprintf(log_file, "<pre>\n");
+    fprintf(log_file, "<p style=\"font-size:20px\">\n");
+
+    fprintf(log_file, "---------------------------Started logging---------------------------------\n");
+    printTime(log_file);
+
+    return log_file;
 }
 
-void printTime(FILE* file)
-{
+void printTime(FILE* file) {
     time_t t = time(NULL);
 
     struct tm tm = *localtime(&t);
@@ -25,10 +37,16 @@ void printTime(FILE* file)
 
 }
 
-void endLog(FILE* LogFile)
-{
-    fprintf(LogFile, "\nEND OF LOG!\n");
-    fprintf(LogFile, "</p>\n");
-    fclose (LogFile);
-    LogFile = nullptr;
+int endLog() {
+    if (log_file == NULL) return -1;
+
+    fprintf(log_file, "\nEND OF LOG!\n");
+    
+    fprintf(log_file, "</p>\n");
+
+    int fclose_report = fclose(log_file);
+    if (fclose_report == EOF)
+        return -1;
+
+    return 0;
 }

@@ -41,7 +41,7 @@ void PrintNodeDataToFile(TreeNode_t* node, FILE* standartFile)
 		}
 		case Type_DEF: 	    fprintf(standartFile, "VAR");      break;
 		case Type_ASSIGN:   fprintf(standartFile, "EQ");       break;
-		case Type_NUM:      fprintf(standartFile, "%lg", node->numVal); break;
+		case Type_NUM:      fprintf(standartFile, "%d", node->numVal); break;
 		case Type_FUNC_NAME:
 		case Type_VAR:      fprintf(standartFile, "\"%s\"", node->name); break;
 		case Type_OP:       PrintOpToFile(node, standartFile); break;
@@ -92,7 +92,7 @@ TreeNode_t* ReadStandart(FILE* standart)
 TreeNode_t* ReadTree(TreeNode_t* node, char** buf)
 {
     char* data = (char*) calloc (STR_MAX_SIZE, sizeof(*data));
-    double num             = 0;
+    int    num = 0;
 	size_t lineIndex = 0;
 	int    len       = 0;
 
@@ -106,7 +106,7 @@ TreeNode_t* ReadTree(TreeNode_t* node, char** buf)
 		(*buf)++; 
 		SkipSpaces(buf, &lineIndex);
 
-        if (sscanf(*buf, "%lg%n", &num, &len))
+        if (sscanf(*buf, "%d%n", &num, &len))
         {
             curNode = MakeNode(Type_NUM, Op_Null, num, NULL, NULL, NULL); 
 			*buf += len;

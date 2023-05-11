@@ -34,19 +34,16 @@
 
 typedef char Val_t;
 
-enum InsMode
-{
+enum InsMode {
 	LEFT  = -1,
 	RIGHT =  1,
 };
-
 
 const size_t DEAD_SIZE      = 0xDEADBEAF;
 const size_t STR_MAX_SIZE   = 50;
 const size_t VAR_SIZE       = 10;
 
-enum TreeStatus
-{
+enum TreeStatus {
     TREE_IS_OK              = 0 << 0,
     TREE_NULL_PTR           = 1 << 0,
     TREE_DATA_NULL_PTR      = 1 << 1,
@@ -63,9 +60,7 @@ enum TreeStatus
 	CANT_MAKE_NODE          = 1 << 19,
 };
 
-
-enum NodeType
-{
+enum NodeType {
 	Type_NULL = 0,
 	Type_OP,
 	Type_VAR,
@@ -91,8 +86,7 @@ enum NodeType
 	Type_FUNC_NAME,
 };
 
-enum OperationType
-{
+enum OperationType {
 	Op_Null = -1,
 
 	Op_Add  =  0,
@@ -111,12 +105,11 @@ enum OperationType
 	Op_IsBt = 14,
 };
 
-struct TreeNode_t
-{
+struct TreeNode_t {
 	NodeType type;
 	
 	OperationType opVal;
-	double        numVal;
+	int           numVal;
 	char          name[VAR_SIZE];
 	size_t        lineIndex;
 	
@@ -125,30 +118,26 @@ struct TreeNode_t
 	TreeNode_t*	 right;
 };
 
-struct Tree_t
-{
+struct Tree_t {
 	TreeNode_t* root;
 	size_t      size;
 	int  status;
 };
 
-void MakePngName(char* name, char num);
-void TreeDump(Tree_t* tree);
-int TreeVerify(Tree_t* tree);
-int TreePrint(TreeNode_t* root, FILE* stream, size_t tabCount=0);
-int TrNodeRemove(Tree_t* tree, TreeNode_t* node);
-int TreeIsEmpty(Tree_t* tree);
-int TreeIsDestructed(Tree_t* tree);
-int TreeDtor(Tree_t* tree);
-int TreeCtor(Tree_t* tree);
-int DeleteNode(TreeNode_t* node);
+void        MakePngName     (char*       name, char  num);
+void        TreeDump        (Tree_t*     tree);
+int         TreeVerify      (Tree_t*     tree);
+int         TreePrint       (TreeNode_t* root, FILE*        stream, size_t tabCount=0);
+int         TrNodeRemove    (Tree_t*     tree, TreeNode_t*  node);
+int         TreeIsEmpty     (Tree_t*     tree);
+int         TreeIsDestructed(Tree_t*     tree);
+int         TreeDtor        (Tree_t*     tree);
+int         TreeCtor        (Tree_t*     tree);
+int         DeleteNode      (TreeNode_t* node);
+TreeNode_t* MakeNode        (NodeType    type, OperationType opVal,  int numVal, const char* name, TreeNode_t* left, TreeNode_t* right, size_t lineIndex = 0);
+TreeNode_t* TrNodeInsert    (Tree_t*     tree, TreeNode_t*   parent, InsMode insMode);
+int         TreeNodeCtor    (TreeNode_t* newNode);
+int         NodeDump        (TreeNode_t* node, int*          nodeCount, FILE* file);
+int         TreeUpdate      (Tree_t*     tree, TreeNode_t*   node);
 
-TreeNode_t* MakeNode(NodeType type, OperationType opVal, double numVal, const char* name, TreeNode_t* left, TreeNode_t* right, size_t lineIndex = 0);
 
-TreeNode_t* TrNodeInsert(Tree_t* tree, TreeNode_t* parent, InsMode insMode);
-
-int TreeNodeCtor(TreeNode_t* newNode);
-
-int NodeDump(TreeNode_t* node, int* nodeCount, FILE* file);
-
-int TreeUpdate(Tree_t* tree, TreeNode_t* node);

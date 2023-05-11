@@ -13,7 +13,7 @@
 #define STR_EQ(str1, str2) (strcmp (str1, str2) == 0)
 
 #define PRINT_NAME printf("<%s>\n", (*(tokens->firstTok + *curIndex))->name);
-#define PRINT_NUM  printf("<%lg>\n", (*(tokens->firstTok + *curIndex))->numVal);
+#define PRINT_NUM  printf("<%d>\n", (*(tokens->firstTok + *curIndex))->numVal);
 
 #define SYNTAXCTRL(str) \
 		if (!STR_EQ(str, (*(tokens->firstTok + *curIndex))->name)) \

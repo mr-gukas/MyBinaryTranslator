@@ -1,7 +1,5 @@
 #include "tree.h"
 
-extern FILE* LogFile;
-
 int TreeCtor(Tree_t* tree)
 {
 	if (tree == NULL) return TREE_NULL_PTR;
@@ -50,7 +48,7 @@ int TreeIsEmpty(Tree_t* tree)
 	return TREE_UB;
 }
 
-TreeNode_t* MakeNode(NodeType type, OperationType opVal, double numVal, const char* name, TreeNode_t* left, TreeNode_t* right, size_t lineIndex)
+TreeNode_t* MakeNode(NodeType type, OperationType opVal, int numVal, const char* name, TreeNode_t* left, TreeNode_t* right, size_t lineIndex)
 {
 	TreeNode_t* newNode = (TreeNode_t*) calloc(1, sizeof(TreeNode_t));
 	if (newNode == NULL)
@@ -214,7 +212,7 @@ int NodeDump(TreeNode_t* node, int* nodeCount, FILE* file)
 	}
 	else if (node->type == Type_NUM)
 	{
-		fprintf(file, "%lg", node->numVal);
+		fprintf(file, "%d", node->numVal);
 	}
 	else
 	{
@@ -242,9 +240,9 @@ void TreeDump(Tree_t* tree)
 {   
     ASSERT(tree != NULL);
 
-    fprintf(LogFile, "\n<hr>\n");
+    fprintf(log_file, "\n<hr>\n");
    
-    fprintf(LogFile, "<h1> Tree status: </h1>\n");
+    fprintf(log_file, "<h1> AST (Abstract Syntax Tree): </h1>\n");
 
     FILE* DumpFile = fopen("obj/dump", "w+");
 	
@@ -270,7 +268,7 @@ void TreeDump(Tree_t* tree)
     sprintf(buff, "dot obj/dump -T png -o %s", dumpName);
     system(buff);
 	
-    fprintf(LogFile, "<img src = %s>\n", dumpName + 4);
+    fprintf(log_file, "<img src = %s>\n", dumpName + 4);
 
 	char showpic[100] = "";
 	sprintf(showpic, "eog %s\n", dumpName);

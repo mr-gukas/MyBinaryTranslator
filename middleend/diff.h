@@ -1,7 +1,6 @@
 #pragma once
 #include "../tree/tree.h"
 #include "../filework/filework.h"
-#include "../log/LOG.h"
 #include "../utils/dsl.h"
 #include <math.h>
 #include "../standart/standart.h"

@@ -1,9 +1,5 @@
 #include "diff.h"
 
-#ifdef LOG_MODE
-    FILE* LogFile = startLog(LogFile);
-#endif
-
 int main(void)
 {
 	FILE* standart = fopen("obj/standart.txt", "r");
@@ -23,9 +19,6 @@ int main(void)
 
 	TreeDtor(&stTree);	
 
-#ifdef LOG_MODE
-    endLog(LogFile);
-#endif
 	return 0;
 }
 
@@ -111,7 +104,7 @@ int SimplifyConst(TreeNode_t* node, Tree_t* tree)
 	
 	if (node->left->type == Type_NUM) 
 	{                                              
-		double newNum = 0;
+		int newNum = 0;
 
 		if (node->right != NULL && node->right->type == Type_NUM)				
 		{

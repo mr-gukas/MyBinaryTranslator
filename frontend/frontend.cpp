@@ -1,9 +1,5 @@
 #include "frontend.h"
 
-#ifdef LOG_MODE
-    FILE* LogFile = startLog(LogFile);
-#endif
-
 int main(const int argc, const char* argv[])
 {
 	assert(argc == 2 && argv != NULL);
@@ -21,7 +17,6 @@ int main(const int argc, const char* argv[])
 	tree.root = GetCode(&tokens, &curIndex, &memdef);
 	TreeUpdate(&tree, tree.root);
 	
-	TreeDump(&tree);
 	FILE* standart = fopen("obj/standart.txt", "w+");
 	PrintTreeToFile(tree.root, standart);
 	fclose(standart);
@@ -29,9 +24,6 @@ int main(const int argc, const char* argv[])
 	TokensDtor(&tokens, &memdef);
 	fclose(code);
 	
-#ifdef LOG_MODE
-    endLog(LogFile);
-#endif
 	return 0;
 }
 
@@ -74,10 +66,10 @@ void GetTokens(Tokens_t* tokens, FILE* code)
 		}
 		else if (isdigit(*dataptr) || *dataptr == '-')
 		{
-			double val    = 0;
-			size_t valLen = 0;
+			int val    = 0;
+			int valLen = 0;
 			
-			sscanf(dataptr, "%lf%n", &val, &valLen);
+			sscanf(dataptr, "%d%n", &val, &valLen);
 			*(tokens->firstTok + tokens->nodeCount) = MakeNode(Type_NUM, Op_Null, val, NULL, NULL, NULL, lineIndex);
 
 			tokens->nodeCount++;
