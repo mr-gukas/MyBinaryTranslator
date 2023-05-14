@@ -1,12 +1,12 @@
 #pragma once
+#include "stack/stack.h"
 #include "../frontend/frontend.h"
 #include "../tree/tree.h"
-#include "stack/stack.h"
+#include "opcodes.h"
 #include <stdint.h>
 #include <elf.h>
+#include <sys/mman.h>
 
-
-#define LOG_NAME "logs.txt"
 #define AST_FILE_NAME "obj/standart.txt"
 
 #ifdef DEBUG_MODE
@@ -29,9 +29,14 @@
           node->name);                                                         \
   abort();
 
+
+
+const char reg_name[4][4] = {"RAX", "RCX", "RDX", "RDX"};
+
 const size_t VAR_COUNT  = 10000;
 const size_t FUNC_COUNT = 10000;
 const size_t POISON_PTR = 31415;
+const size_t PERLINE    = 16;
 
 enum RetValue { VOID, INT };
 
@@ -149,13 +154,19 @@ int ParsePrintf(TreeNode_t *node, Program_t *program);
 int ProgramCtor(Program_t *program, TreeNode_t *node);
 int ProgramDtor(Program_t* program);
 
-int WriteBinCode(TreeNode_t *root);
+Program_t* WriteBinCode(TreeNode_t *root);
 VarTable_t *VarTableCtor(Stack_t *stk);
 int         VarTableDtor(VarTable_t *table);
 int         FuncArrDtor(Func_t *funcArr);
 size_t      CountParams(TreeNode_t *node);
-
 Func_t *FuncArrCtor();
+static void binCodeRun(bin_code_t* code);
+
+
+void Printf4Translator(int num);
+void Scanf4Translator(int* num);
+static void binCodeMemcpy(bin_code_t* code, size_t dest, void* arg, size_t size);
+void hexDump (const void * addr, const int len, FILE* file);
 
 
 

@@ -1,0 +1,701 @@
+<pre>
+<p style="font-size:7px">
+DATE: 14-05-2023
+TIME: 15:30:05
+
+<hr>
+<h1> AST (Abstract Syntax Tree): </h1>
+<img src = dump001.png>
+MEMCPY HEXDUMP:
+  0000  48 c7 c0                                         H..
+code size: 3
+MEMCPY HEXDUMP:
+  0000  40 00 00 00 10 61 00 00                          @....a..
+code size: 11
+MEMCPY HEXDUMP:
+  0000  e9                                               .
+code size: 12
+JMP_JMP 0 MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 16
+PUSH_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 8b                                            H.
+code size: 18
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 22
+MEMCPY HEXDUMP:
+  0000  b8                                               .
+code size: 23
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 24
+PUSH_IMM
+	IMM: 2
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 27
+MEMCPY HEXDUMP:
+  0000  02 00 00 00                                      ....
+code size: 31
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 32
+IsBt
+MEMCPY HEXDUMP:
+  0000  5e 5f 48 39 f7                                   ^_H9.
+code size: 37
+PUSH_IMM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 40
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 44
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 45
+MEMCPY HEXDUMP:
+  0000  5e 5f 48 39 f7 0f 84                             ^_H9...
+code size: 52
+JMP_JE 0 MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 56
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 57
+PUSH_IMM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 60
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 64
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 65
+Add
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 58 ca f2 0f 11 0c 24                          .X.....$
+code size: 89
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 90
+PUSH_IMM_REG_MEM
+	IMM: -1
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 8b                                            H.
+code size: 92
+MEMCPY HEXDUMP:
+  0000  ff ff ff ff                                      ....
+code size: 96
+MEMCPY HEXDUMP:
+  0000  b8                                               .
+code size: 97
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 98
+PUSH_IMM
+	IMM: 1
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 101
+MEMCPY HEXDUMP:
+  0000  01 00 00 00                                      ....
+code size: 105
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 106
+Sub
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 5c ca f2 0f 11 0c 24                          .\.....$
+code size: 130
+POP_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  5f 48 89                                         _H.
+code size: 133
+MEMCPY HEXDUMP:
+  0000  78                                               x
+code size: 134
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 138
+PUSH_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 8b                                            H.
+code size: 140
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 144
+MEMCPY HEXDUMP:
+  0000  b8                                               .
+code size: 145
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 146
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 147
+PUSH_IMM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 150
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 154
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 155
+Add
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 58 ca f2 0f 11 0c 24                          .X.....$
+code size: 179
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 180
+POP_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  5f 48 89                                         _H.
+code size: 183
+MEMCPY HEXDUMP:
+  0000  78                                               x
+code size: 184
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 188
+MEMCPY HEXDUMP:
+  0000  e8                                               .
+code size: 189
+JMP_CALL 172 MEMCPY HEXDUMP:
+  0000  ac 00 00 00                                      ....
+code size: 193
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 194
+PUSH_IMM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 197
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 201
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 202
+Sub
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 5c ca f2 0f 11 0c 24                          .\.....$
+code size: 226
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 227
+PUSH_REG
+	IMM: 0
+	REG: RCX
+MEMCPY HEXDUMP:
+  0000  51                                               Q
+code size: 228
+PUSH_IMM_REG_MEM
+	IMM: -1
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 8b                                            H.
+code size: 230
+MEMCPY HEXDUMP:
+  0000  ff ff ff ff                                      ....
+code size: 234
+MEMCPY HEXDUMP:
+  0000  b8                                               .
+code size: 235
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 236
+Mul
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 59 ca f2 0f 11 0c 24                          .Y.....$
+code size: 260
+POP_REG
+	IMM: 0
+	REG: RCX
+MEMCPY HEXDUMP:
+  0000  59                                               Y
+code size: 261
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 262
+PUSH_IMM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 265
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 269
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 270
+Sub
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 5c ca f2 0f 11 0c 24                          .\.....$
+code size: 294
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 295
+MEMCPY HEXDUMP:
+  0000  c3                                               .
+code size: 296
+RET
+PUSH_IMM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 299
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 303
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 304
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 305
+MEMCPY HEXDUMP:
+  0000  e9                                               .
+code size: 306
+JMP_JMP 0 MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 310
+MEMCPY HEXDUMP:
+  0000  02 01 00 00                                      ....
+code size: 310
+REGEN JUMP ARG in 52 on 258
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 311
+PUSH_IMM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 314
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 318
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 319
+Add
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 58 ca f2 0f 11 0c 24                          .X.....$
+code size: 343
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 344
+PUSH_IMM
+	IMM: 1
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 347
+MEMCPY HEXDUMP:
+  0000  01 00 00 00                                      ....
+code size: 351
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 352
+POP_REG
+	IMM: 0
+	REG: RCX
+MEMCPY HEXDUMP:
+  0000  59                                               Y
+code size: 353
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 354
+PUSH_IMM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 357
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 361
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 362
+Sub
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 5c ca f2 0f 11 0c 24                          .\.....$
+code size: 386
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 387
+MEMCPY HEXDUMP:
+  0000  c3                                               .
+code size: 388
+RET
+PUSH_IMM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 391
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 395
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 396
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 397
+MEMCPY HEXDUMP:
+  0000  55 00 00 00                                      U...
+code size: 397
+REGEN JUMP ARG in 312 on 85
+MEMCPY HEXDUMP:
+  0000  86 01 00 00                                      ....
+code size: 397
+REGEN JUMP ARG in 7 on 390
+PUSH_IMM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 400
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 404
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 405
+POP_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  5f 48 89                                         _H.
+code size: 408
+MEMCPY HEXDUMP:
+  0000  78                                               x
+code size: 409
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 413
+INPUT
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 414
+MEMCPY HEXDUMP:
+  0000  48 8d 7c 24 00                                   H.|$.
+code size: 419
+MEMCPY HEXDUMP:
+  0000  50 53 51 52                                      PSQR
+code size: 423
+MEMCPY HEXDUMP:
+  0000  48 89 e5                                         H..
+code size: 426
+MEMCPY HEXDUMP:
+  0000  48 83 e4 f0                                      H...
+code size: 430
+MEMCPY HEXDUMP:
+  0000  e8                                               .
+code size: 431
+JMP_CALL -132769770 MEMCPY HEXDUMP:
+  0000  16 18 16 f8                                      ....
+code size: 435
+MEMCPY HEXDUMP:
+  0000  48 89 ec                                         H..
+code size: 438
+MEMCPY HEXDUMP:
+  0000  5a 59 5b 58                                      ZY[X
+code size: 442
+POP_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  5f 48 89                                         _H.
+code size: 445
+MEMCPY HEXDUMP:
+  0000  78                                               x
+code size: 446
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 450
+PUSH_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 8b                                            H.
+code size: 452
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 456
+MEMCPY HEXDUMP:
+  0000  b8                                               .
+code size: 457
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 458
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 459
+PUSH_IMM
+	IMM: 8
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 462
+MEMCPY HEXDUMP:
+  0000  08 00 00 00                                      ....
+code size: 466
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 467
+Add
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 58 ca f2 0f 11 0c 24                          .X.....$
+code size: 491
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 492
+POP_IMM_REG_MEM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  5f 48 89                                         _H.
+code size: 495
+MEMCPY HEXDUMP:
+  0000  78                                               x
+code size: 496
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 500
+MEMCPY HEXDUMP:
+  0000  e8                                               .
+code size: 501
+JMP_CALL 484 MEMCPY HEXDUMP:
+  0000  e4 01 00 00                                      ....
+code size: 505
+PUSH_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  50                                               P
+code size: 506
+PUSH_IMM
+	IMM: 8
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 509
+MEMCPY HEXDUMP:
+  0000  08 00 00 00                                      ....
+code size: 513
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 514
+Sub
+MEMCPY HEXDUMP:
+  0000  f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2  ...L$.....$H....
+  0010  0f 5c ca f2 0f 11 0c 24                          .\.....$
+code size: 538
+POP_REG
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  58                                               X
+code size: 539
+PUSH_REG
+	IMM: 0
+	REG: RCX
+MEMCPY HEXDUMP:
+  0000  51                                               Q
+code size: 540
+POP_IMM_REG_MEM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  5f 48 89                                         _H.
+code size: 543
+MEMCPY HEXDUMP:
+  0000  78                                               x
+code size: 544
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 548
+OUTPUT
+PUSH_IMM_REG_MEM
+	IMM: 4
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 8b                                            H.
+code size: 550
+MEMCPY HEXDUMP:
+  0000  04 00 00 00                                      ....
+code size: 554
+MEMCPY HEXDUMP:
+  0000  b8                                               .
+code size: 555
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 556
+MEMCPY HEXDUMP:
+  0000  48 89 e7                                         H..
+code size: 559
+MEMCPY HEXDUMP:
+  0000  50 53 51 52                                      PSQR
+code size: 563
+MEMCPY HEXDUMP:
+  0000  48 83 e4 f0                                      H...
+code size: 567
+MEMCPY HEXDUMP:
+  0000  e8                                               .
+code size: 568
+JMP_CALL -132772429 MEMCPY HEXDUMP:
+  0000  b3 0d 16 f8                                      ....
+code size: 572
+MEMCPY HEXDUMP:
+  0000  48 89 ec                                         H..
+code size: 575
+MEMCPY HEXDUMP:
+  0000  5a 59 5b 58                                      ZY[X
+code size: 579
+MEMCPY HEXDUMP:
+  0000  5f                                               _
+code size: 580
+PUSH_IMM
+	IMM: 0
+	REG: RAX
+MEMCPY HEXDUMP:
+  0000  48 c7 c7                                         H..
+code size: 583
+MEMCPY HEXDUMP:
+  0000  00 00 00 00                                      ....
+code size: 587
+MEMCPY HEXDUMP:
+  0000  57                                               W
+code size: 588
+MEMCPY HEXDUMP:
+  0000  c3                                               .
+code size: 589
+RET
+FULL DUMP:
+  0000  48 c7 c0 40 00 00 00 86 01 00 00 e9 00 00 00 00  H..@............
+  0010  48 8b 00 00 00 00 b8 57 48 c7 c7 02 00 00 00 57  H......WH......W
+  0020  5e 5f 48 39 f7 48 c7 c7 00 00 00 00 57 5e 5f 48  ^_H9.H......W^_H
+  0030  39 f7 0f 84 02 01 00 00 50 48 c7 c7 04 00 00 00  9.......PH......
+  0040  57 f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08  W...L$.....$H...
+  0050  f2 0f 58 ca f2 0f 11 0c 24 58 48 8b ff ff ff ff  ..X.....$XH.....
+  0060  b8 57 48 c7 c7 01 00 00 00 57 f2 0f 10 4c 24 08  .WH......W...L$.
+  0070  f2 0f 10 14 24 48 83 c4 08 f2 0f 5c ca f2 0f 11  ....$H.....\....
+  0080  0c 24 5f 48 89 78 00 00 00 00 48 8b 00 00 00 00  .$_H.x....H.....
+  0090  b8 57 50 48 c7 c7 04 00 00 00 57 f2 0f 10 4c 24  .WPH......W...L$
+  00a0  08 f2 0f 10 14 24 48 83 c4 08 f2 0f 58 ca f2 0f  .....$H.....X...
+  00b0  11 0c 24 58 5f 48 89 78 00 00 00 00 e8 ac 00 00  ..$X_H.x........
+  00c0  00 50 48 c7 c7 04 00 00 00 57 f2 0f 10 4c 24 08  .PH......W...L$.
+  00d0  f2 0f 10 14 24 48 83 c4 08 f2 0f 5c ca f2 0f 11  ....$H.....\....
+  00e0  0c 24 58 51 48 8b ff ff ff ff b8 57 f2 0f 10 4c  .$XQH......W...L
+  00f0  24 08 f2 0f 10 14 24 48 83 c4 08 f2 0f 59 ca f2  $.....$H.....Y..
+  0100  0f 11 0c 24 59 50 48 c7 c7 04 00 00 00 57 f2 0f  ...$YPH......W..
+  0110  10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2 0f 5c  .L$.....$H.....\
+  0120  ca f2 0f 11 0c 24 58 c3 48 c7 c7 00 00 00 00 57  .....$X.H......W
+  0130  58 e9 00 00 00 00 50 48 55 00 00 00 00 00 57 f2  X.....PHU.....W.
+  0140  0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4 08 f2 0f  ..L$.....$H.....
+  0150  58 ca f2 0f 11 0c 24 58 48 c7 c7 01 00 00 00 57  X.....$XH......W
+  0160  59 50 48 c7 c7 04 00 00 00 57 f2 0f 10 4c 24 08  YPH......W...L$.
+  0170  f2 0f 10 14 24 48 83 c4 08 f2 0f 5c ca f2 0f 11  ....$H.....\....
+  0180  0c 24 58 c3 48 c7 c7 00 00 00 00 57 58 48 c7 c7  .$X.H......WXH..
+  0190  00 00 00 00 57 5f 48 89 78 00 00 00 00 57 48 8d  ....W_H.x....WH.
+  01a0  7c 24 00 50 53 51 52 48 89 e5 48 83 e4 f0 e8 16  |$.PSQRH..H.....
+  01b0  18 16 f8 48 89 ec 5a 59 5b 58 5f 48 89 78 00 00  ...H..ZY[X_H.x..
+  01c0  00 00 48 8b 00 00 00 00 b8 57 50 48 c7 c7 08 00  ..H......WPH....
+  01d0  00 00 57 f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83  ..W...L$.....$H.
+  01e0  c4 08 f2 0f 58 ca f2 0f 11 0c 24 58 5f 48 89 78  ....X.....$X_H.x
+  01f0  00 00 00 00 e8 e4 01 00 00 50 48 c7 c7 08 00 00  .........PH.....
+  0200  00 57 f2 0f 10 4c 24 08 f2 0f 10 14 24 48 83 c4  .W...L$.....$H..
+  0210  08 f2 0f 5c ca f2 0f 11 0c 24 58 51 5f 48 89 78  ...\.....$XQ_H.x
+  0220  04 00 00 00 48 8b 04 00 00 00 b8 57 48 89 e7 50  ....H......WH..P
+  0230  53 51 52 48 83 e4 f0 e8 b3 0d 16 f8 48 89 ec 5a  SQRH........H..Z
+  0240  59 5b 58 5f 48 c7 c7 00 00 00 00 57 c3           Y[X_H......W.
+
+END OF LOG!

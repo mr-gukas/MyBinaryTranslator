@@ -8,7 +8,7 @@ middle:
 	g++ $(CPPFLAGS)	middleend/diff.cpp tree/tree.cpp filework/filework.cpp standart/standart.cpp log/LOG.cpp -o run/middle
 
 back:
-	g++ $(CPPFLAGS)	backend/backend.cpp backend/stack/stack.cpp tree/tree.cpp filework/filework.cpp standart/standart.cpp log/LOG.cpp -o run/back
+	g++ $(CPPFLAGS)	bintrans/bintrans.cpp bintrans/stack/stack.cpp tree/tree.cpp filework/filework.cpp standart/standart.cpp log/LOG.cpp -o run/back
 
 cp:
 	g++ $(CPPFLAGS) cpu/cpu.cpp cpu/stack/stack.cpp log/LOG.cpp -o run/cpu
@@ -16,10 +16,6 @@ cp:
 asm: 
 	g++ $(CPPFLAGS) cpu/asm.cpp filework/filework.cpp -o run/asm
 
-trans:
-	g++ $(CPPFLAGS) translator/translator.cpp filework/filework.cpp tree/tree.cpp standart/standart.cpp log/LOG.cpp -o run/trans
-
-	
 MK:
 	g++ $(CPPFLAGS) MK.cpp -o lang 
 

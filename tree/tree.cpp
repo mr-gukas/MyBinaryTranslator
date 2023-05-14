@@ -275,7 +275,6 @@ void TreeDump(Tree_t* tree)
 	//system(showpic);
 
     ++pngIndex;
-
 }
 
 void MakePngName(char* name, char num)

@@ -1,9 +1,9 @@
 #pragma once
-
+#include "../../log/LOG.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
-#include "../bintrans.hpp"
+
 
 #ifndef ASSERT_OK
 #define ASSERT_OK ;

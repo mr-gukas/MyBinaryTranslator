@@ -8,12 +8,12 @@
 
 #define DEBUG_MODE 1
 
-#define LOG_NAME "logs.txt"
+#define LOG_NAME "logs.htm"
 
 extern FILE* log_file;
 
 #ifndef PRINT_FILE
-    #define PRINT_FILE "obj/log.htm"
+    #define PRINT_FILE "obj/logs.htm"
 #endif
 
 #define LOG_DIR "obj/"
@@ -29,7 +29,7 @@ extern FILE* log_file;
 #define LOGS_ARGS_USE \
         FUNC_NAME, FILE_NAME, _LINE_, log_file
 
-const size_t FILE_NAME_SIZE = 32;
+//const size_t FILE_NAME_SIZE = 32;
 
 FILE* startLog (const char* filename);
 int   endLog   ();

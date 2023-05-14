@@ -1,7 +1,4 @@
 #include "stack.h"
- 
-extern FILE* LogFile;
-
 void print(FILE* file, int param)
 {
     fprintf(file, "%d", param);
@@ -322,30 +319,30 @@ Elem_t StackPop(Stack_t* stk)
 void StackDumpFunc(Stack_t* stk, size_t line, const char file[MAX_STR_SIZE], const char func[MAX_STR_SIZE])
 {   
     
-    fprintf(LogFile, "\n---------------------------StackDump---------------------------------------\n");
+    fprintf(log_file, "\n---------------------------StackDump---------------------------------------\n");
    
     if (stk->status & STACK_NULL_PTR)
     {
-        fprintf(LogFile, "Stack's pointer is null\n");
+        fprintf(log_file, "Stack's pointer is null\n");
     }
 
-    fprintf(LogFile, "Called at %s at %s(%lu)\n", file, func, line);
-    fprintf(LogFile, "Stack[%p] <%s> at %s at %s(%lu)\n", stk, (stk->info).stackName, (stk->info).stackFunc,
+    fprintf(log_file, "Called at %s at %s(%lu)\n", file, func, line);
+    fprintf(log_file, "Stack[%p] <%s> at %s at %s(%lu)\n", stk, (stk->info).stackName, (stk->info).stackFunc,
                                                   (stk->info).stackFile, (stk->info).stackLine);
-    fprintf(LogFile, "Stack status:\n");
+    fprintf(log_file, "Stack status:\n");
     
 
     StackVerify(stk);
     
     if (stk->status & STACK_DATA_IS_RUINED)
     {
-        fprintf(LogFile, "\t\t!!!STACK'S DATA IS RUINED!!!\n");
+        fprintf(log_file, "\t\t!!!STACK'S DATA IS RUINED!!!\n");
     }
  
     #define StatPrint_(STATUS, text) \
         if (stk->status & STATUS)          \
         {                                   \
-            fprintf(LogFile, #text "\n");    \
+            fprintf(log_file, #text "\n");    \
         }
     
     StatPrint_(STACK_IS_EMPTY,                 >>>Stack is empty);
@@ -370,60 +367,60 @@ void StackDumpFunc(Stack_t* stk, size_t line, const char file[MAX_STR_SIZE], con
 
     if (!stk->status)
     {
-        fprintf(LogFile, ">>>Stack is OK\n");
+        fprintf(log_file, ">>>Stack is OK\n");
     }
     
-    fprintf(LogFile, "{\n");
+    fprintf(log_file, "{\n");
 
 #if HASH_GUARD
-    fprintf(LogFile, "    STACK HASH:  %lx    STACK DATA HASH: %lx\n",  stk->stackHash, stk->dataHash);
+    fprintf(log_file, "    STACK HASH:  %lx    STACK DATA HASH: %lx\n",  stk->stackHash, stk->dataHash);
 #endif
 
 #if CANARY_GUARD
-    fprintf(LogFile, "    LEFT CANARY: %llx   RIGHT CANARY:    %llx\n", stk->leftCanary, stk->rightCanary);
+    fprintf(log_file, "    LEFT CANARY: %llx   RIGHT CANARY:    %llx\n", stk->leftCanary, stk->rightCanary);
 #endif
 
-    fprintf(LogFile, "    data pointer = %p\n", stk->data);
+    fprintf(log_file, "    data pointer = %p\n", stk->data);
     
     if (StackIsDestructed(stk) == STACK_IS_DESTRUCTED)
     {        
-        fprintf(LogFile, "    size         = %lx\n", stk->size);
-        fprintf(LogFile, "    capacity     = %lx\n", stk->capacity);
+        fprintf(log_file, "    size         = %lx\n", stk->size);
+        fprintf(log_file, "    capacity     = %lx\n", stk->capacity);
 
     }
     else if (!(stk->status & (STACK_DATA_NULL_PTR | STACK_IS_EMPTY))) 
     {
-        fprintf(LogFile, "    size         = %lu\n", stk->size);
-        fprintf(LogFile, "    capacity     = %lu\n", stk->capacity);
+        fprintf(log_file, "    size         = %lu\n", stk->size);
+        fprintf(log_file, "    capacity     = %lu\n", stk->capacity);
 
 #if CANARY_GUARD
-        fprintf(LogFile, "    DATA LEFT CANARY: %llx   DATA RIGHT CANARY: %llx\n",
+        fprintf(log_file, "    DATA LEFT CANARY: %llx   DATA RIGHT CANARY: %llx\n",
                               *((Canary_t*) ((char*) stk->data - sizeof(Canary_t))), 
                               *((Canary_t*) ((char*) stk->data + sizeof(Elem_t) * stk->capacity)));
 #endif
-        fprintf(LogFile, "    {\n");
+        fprintf(log_file, "    {\n");
         
         for (size_t index = 0; index < stk->capacity; ++index)
         {
-            fprintf(LogFile, "\t");
-            fprintf(LogFile, (index < stk->size) ? "*" : " ");
-            fprintf(LogFile, "[%lu] = ", index);
+            fprintf(log_file, "\t");
+            fprintf(log_file, (index < stk->size) ? "*" : " ");
+            fprintf(log_file, "[%lu] = ", index);
 
-            print(LogFile, stk->data[index]);
+            print(log_file, stk->data[index]);
 
 #if CANARY_GUARD            
             if (index >= stk->size)
             {
-               fprintf(LogFile, " (POISON)");
+               fprintf(log_file, " (POISON)");
             }
 #endif
-            fprintf(LogFile, "\n");
+            fprintf(log_file, "\n");
         }
-        fprintf(LogFile, "    }\n");
+        fprintf(log_file, "    }\n");
     }
 
-    fprintf(LogFile, "}\n");
-    fprintf(LogFile, "\n---------------------------------------------------------------------------\n");
+    fprintf(log_file, "}\n");
+    fprintf(log_file, "\n---------------------------------------------------------------------------\n");
 
     #undef StatPrint_
 }

@@ -1,5 +1,4 @@
 #include "bintrans.hpp"
-#include <cstdlib>
     
 int main(void)
 {
@@ -9,7 +8,10 @@ int main(void)
     readAST(&stTree, AST_FILE_NAME);
 //-----------------------------------------------
 // from AST to binary code  
-	WriteBinCode(stTree.root);
+	Program_t* program = WriteBinCode(stTree.root);
+//-----------------------------------------------
+// run binary code 
+    binCodeRun(program->code);
 //-----------------------------------------------
 // for debugging
     #ifdef DEBUG_MODE
@@ -19,17 +21,21 @@ int main(void)
 	return 0;
 }
 
-int WriteAsmCode(TreeNode_t* root)
+Program_t* WriteBinCode(TreeNode_t* root)
 {
 	assert(root); 
 
-	Program_t   program = {};
-	ProgramCtor(&program, root);
-	
-	ParseStatement(program.node, &program);
+	Program_t*  program = (Program_t*) calloc(1, sizeof(Program_t));
+	ProgramCtor(program, root);
 
-    ProgramDtor(&program);
-	return 0;
+	ParseStatement(program->node, program);
+
+    #ifdef DEBUG_MODE
+        fprintf(log_file, "FULL DUMP:\n");
+        hexDump(program->code->data, program->code->data_size, log_file);
+    #endif
+    
+    return program;
 }
 
 int ProgramCtor(Program_t* program, TreeNode_t* node) {
@@ -75,10 +81,10 @@ void ParseStatement(TreeNode_t* node, Program_t* program)
 
 	if (program->tabStk->size != 0 && (node->parent && node->parent->type != Type_FUNC))
 	{
-        genPush(program->code, PUSH_REG, 0,                RCX_LETTER); 
+        genPush(program->code, PUSH_REG, 0,                RAX_LETTER); 
         genPush(program->code, PUSH_IMM, 4*oldTable->size, 0);
         genOper(program->code, Op_Add);
-        genPop (program->code, POP_REG,  0,                RCX_LETTER);
+        genPop (program->code, POP_REG,  0,                RAX_LETTER);
 
 	}
 
@@ -94,9 +100,13 @@ void ParseStatement(TreeNode_t* node, Program_t* program)
 	int isRet           = 1;
 	while (curNode)
 	{
-		if (curNode->left->type == Type_FUNC && !firstFunc) //TODO: genJmp on main
+		if (curNode->left->type == Type_FUNC && !firstFunc) 
 		{
-            //genJmp(main)
+            uint64_t ram_addr = (uint64_t) program->ram_arr;
+
+            binCodeAppend(program->code, SET_RAM, SET_RAM_SIZE);
+            binCodeMemcpy(program->code, program->code->data_size, &ram_addr, sizeof(uint64_t));
+            genJump(program->code, JMP_JMP, 0);
 			firstFunc = 1;
 		}
 
@@ -120,10 +130,10 @@ void ParseStatement(TreeNode_t* node, Program_t* program)
 
 	if (!isRet && program->tabStk->size != 0 && (node->parent && node->parent->type != Type_FUNC))
 	{
-        genPush(program->code, PUSH_REG, 0,                RCX_LETTER); 
+        genPush(program->code, PUSH_REG, 0,                RAX_LETTER); 
         genPush(program->code, PUSH_IMM, 4*oldTable->size, 0);
         genOper(program->code, Op_Sub);
-        genPop (program->code, POP_REG,  0,                RCX_LETTER);
+        genPop (program->code, POP_REG,  0,                RAX_LETTER);
 	}
 
 	
@@ -138,6 +148,10 @@ int ParseFunc(TreeNode_t* node, Program_t* program)
 			return ALREADY_DEF_FUNC;
 		}
 	}
+    
+    if (STR_EQ("main", node->left->name)) {
+        regenJump(program->code, 7);
+    }
 
 	(program->funcArr[program->funcCount]).name = node->left->name;
 
@@ -145,14 +159,12 @@ int ParseFunc(TreeNode_t* node, Program_t* program)
 		(program->funcArr[program->funcCount]).retVal = INT;
 	else
 		(program->funcArr[program->funcCount]).retVal = VOID;
-
 	
 	VarTable_t* newTable = VarTableCtor(program->tabStk);
 	
 	if (node->left->left)
 		(program->funcArr[program->funcCount]).parCount = ParseParams(node->left->left, newTable);
 	
-     
     program->funcArr[program->funcCount].func_start = program->code->data_size;
 	program->funcCount++;
 	ParseStatement(node->right, program);
@@ -219,21 +231,21 @@ int ParseCall(TreeNode_t* node, Program_t* program)
 	
 	VarTable_t* curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 1);
 
-    genPush(program->code, PUSH_REG, 0,                RCX_LETTER); 
+    genPush(program->code, PUSH_REG, 0,                RAX_LETTER); 
     genPush(program->code, PUSH_IMM, 4*curTable->size, 0);
     genOper(program->code, Op_Add);
-    genPop (program->code, POP_REG,  0,                RCX_LETTER);
+    genPop (program->code, POP_REG,  0,                RAX_LETTER);
 
 	for (int index = (int) callParam - 1; index >= 0; index--)
 	{
-        genPop(program->code, POP_IMM_REG_MEM, 4*index, RCX_LETTER);
+        genPop(program->code, POP_IMM_REG_MEM, 4*index, RAX_LETTER);
 	}
     
     genJump(program->code, JMP_CALL, program->code->data_size - program->funcArr[func_index].func_start);
-    genPush(program->code, PUSH_REG, 0,                RCX_LETTER); 
+    genPush(program->code, PUSH_REG, 0,                RAX_LETTER); 
     genPush(program->code, PUSH_IMM, 4*curTable->size, 0);
     genOper(program->code, Op_Sub);
-    genPop (program->code, POP_REG,  0,                RCX_LETTER);
+    genPop (program->code, POP_REG,  0,                RAX_LETTER);
 
 	return OK;
 }
@@ -291,8 +303,11 @@ size_t ParseParams(TreeNode_t* node, VarTable_t* table)
 	return parCount;
 }
 
-//---------------------------------------------------------------
-int ParsePrintf(TreeNode_t* node, Program_t* program) //TODO: lib printf
+void Printf4Translator(int num) {
+    printf("Output: %d\n", num);
+}
+
+int ParsePrintf(TreeNode_t* node, Program_t* program) 
 {
 	TreeNode_t* curNode = node;
 	while (curNode)
@@ -301,15 +316,34 @@ int ParsePrintf(TreeNode_t* node, Program_t* program) //TODO: lib printf
 		{
 			UNDEF_VAR(node->left);
 		}
-		
+	    	
+        #ifdef DEBUG_MODE    
+            fprintf(log_file, "OUTPUT\n");
+        #endif
+
 		int varPos = GetVarPos(node->left, program->tabStk);
-		fprintf(program->asmFile, "PUSH [%d+RAX]\n" 
-								  "OUT\n", varPos);
+
+        genPush(program->code, PUSH_IMM_REG_MEM, 4*varPos, RAX_LETTER);
+        binCodeAppend(program->code, MOV_RDI_RSP, MOV_RDI_RSP_SIZE);
+        binCodeAppend(program->code, PUSH_REGS,   PUSH_REGS_SIZE);
+        binCodeAppend(program->code, AND_RSP_FF,  AND_RSP_FF_SIZE);
+
+        uint32_t call_offset = (uint64_t)Printf4Translator - (uint64_t)(program->code->data_size + sizeof(int));
+        genJump(program->code, JMP_CALL, call_offset);
+
+        binCodeAppend(program->code, MOV_RSP_RBP, MOV_RSP_RBP_SIZE);
+        binCodeAppend(program->code, POP_REGS,    POP_REGS_SIZE);
+        binCodeAppend(program->code, POP_RDI,     POP_RDI_SIZE);
 
 		curNode = curNode->right;
 	}
 	
 	return OK;
+}
+
+void Scanf4Translator(int* num) {
+    printf("Input: ");
+    scanf("%d", num);
 }
 
 int ParseScanf(TreeNode_t* node, Program_t* program)
@@ -323,8 +357,24 @@ int ParseScanf(TreeNode_t* node, Program_t* program)
 		}
 		
 		int varPos = GetVarPos(node->left, program->tabStk);
-		fprintf(program->asmFile, "INP\n" 
-								  "POP [%d+RAX]\n", varPos);
+
+        #ifdef DEBUG_MODE
+            fprintf(log_file, "INPUT\n");
+        #endif 
+
+        binCodeAppend(program->code, PUSH_RDI,    PUSH_RDI_SIZE);
+        binCodeAppend(program->code, LEA_RDI_RSP, LEA_RDI_RSP_SIZE);
+        binCodeAppend(program->code, PUSH_REGS,   PUSH_REGS_SIZE);
+        binCodeAppend(program->code, MOV_RBP_RSP, MOV_RBP_RSP_SIZE);
+        binCodeAppend(program->code, AND_RSP_FF,  AND_RSP_FF_SIZE);
+
+        uint32_t call_offset = (uint64_t)Scanf4Translator - (uint64_t)(program->code->data_size + sizeof(int));
+        
+        genJump(program->code, JMP_CALL, call_offset);
+        binCodeAppend(program->code, MOV_RSP_RBP, MOV_RSP_RBP_SIZE);
+        binCodeAppend(program->code, POP_REGS,    POP_REGS_SIZE);
+         
+        genPop(program->code, POP_IMM_REG_MEM, varPos, RAX_LETTER);
 
 		curNode = curNode->right;
 	}
@@ -354,8 +404,8 @@ int ParseDef(TreeNode_t* node, Program_t* program)
 	curTable->size += 1;
 		
 	CountExpression(node->right, program);
-
-    genPop(program->code, POP_IMM_REG_MEM, newVar.pos * 4, RCX_LETTER);
+    
+    genPop(program->code, POP_IMM_REG_MEM, newVar.pos * 4, RAX_LETTER);
 
 	return OK;
 }
@@ -376,7 +426,7 @@ int ParseAssign(TreeNode_t* node, Program_t* program)
 	CountExpression(node->right, program);
 	
 
-    genPop(program->code, POP_IMM_REG_MEM, pos * 4, RCX_LETTER);
+    genPop(program->code, POP_IMM_REG_MEM, pos * 4, RAX_LETTER);
 	
 	return OK;
 }
@@ -406,7 +456,7 @@ int ParseIf(TreeNode_t* node, Program_t* program)
 		curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 1);
 
         genPush(program->code, PUSH_IMM, curTable->raxPos,          0);
-        genPop (program->code, POP_REG,                 0, RCX_LETTER);
+        genPop (program->code, POP_REG,                 0, RAX_LETTER);
 
         regenJump(program->code, jmp_addr);       
 	}
@@ -423,7 +473,7 @@ int ParseIf(TreeNode_t* node, Program_t* program)
 		curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 1);
 
         genPush(program->code, PUSH_IMM, curTable->raxPos,          0);
-        genPop (program->code, POP_REG,                 0, RCX_LETTER);
+        genPop (program->code, POP_REG,                 0, RAX_LETTER);
         
         size_t if_addr = program->code->data_size + 7; 
         genJump(program->code, JMP_JMP, 0);
@@ -439,7 +489,7 @@ int ParseIf(TreeNode_t* node, Program_t* program)
 		curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 1);
 
         genPush(program->code, PUSH_IMM, curTable->raxPos,          0);
-        genPop (program->code, POP_REG,                 0, RCX_LETTER);
+        genPop (program->code, POP_REG,                 0, RAX_LETTER);
         
 	    regenJump(program->code, if_addr);	
 	}
@@ -454,16 +504,13 @@ int ParseWhile(TreeNode_t* node, Program_t* program)
 		UNDEF_VAR(node->right);
 	}
 	
-	fprintf(program->asmFile, "\nwhile_%lu:\n", program->whileCounter);
     size_t while_addr = program->code->data_size;
 	CountExpression(node->left, program);
 
     genPush(program->code, PUSH_IMM, 0, 0);
-	fprintf(program->asmFile, "PUSH 0\n");
 
     size_t while_no_addr = program->code->data_size + 7;
     genJump(program->code, JMP_JE, 0);
-	fprintf(program->asmFile, "\nJE :while_no_%lu\n", program->whileCounter);
 
 	ParseStatement(node->right, program);
 	
@@ -474,7 +521,7 @@ int ParseWhile(TreeNode_t* node, Program_t* program)
 	curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 1);
 
     genPush(program->code, PUSH_IMM, curTable->raxPos,          0);
-    genPop (program->code, POP_REG,                 0, RCX_LETTER);
+    genPop (program->code, POP_REG,                 0, RAX_LETTER);
  
     genJump(program->code, JMP_JMP, program->code->data_size - while_addr);
     regenJump(program->code, while_no_addr);
@@ -508,11 +555,11 @@ int ParseRet(TreeNode_t* node, Program_t* program)
 	VarTable_t* curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 2);
 	if (isInLocal)
 	{
-        genPop (program->code, POP_REG,                 0, RAX_LETTER);
-        genPush(program->code, PUSH_REG,                0, RCX_LETTER); 
+        genPop (program->code, POP_REG,                 0, RCX_LETTER);
+        genPush(program->code, PUSH_REG,                0, RAX_LETTER); 
         genPush(program->code, PUSH_IMM, 4*curTable->size,          0);
         genOper(program->code, Op_Sub);
-        genPop (program->code, POP_REG,                 0, RCX_LETTER);
+        genPop (program->code, POP_REG,                 0, RAX_LETTER);
 
 	}
     
@@ -533,18 +580,18 @@ void CountExpression(TreeNode_t* node, Program_t* program)
 	else if (node->type == Type_VAR)
 	{
 		int varPos = GetVarPos(node, program->tabStk);
-        genPush(program->code, PUSH_IMM_REG_MEM, varPos, RCX_LETTER);
+        genPush(program->code, PUSH_IMM_REG_MEM, varPos, RAX_LETTER);
 	}
 	else if (node->type == Type_CALL)
 	{
 		ParseCall(node, program);
-        genPush(program->code, PUSH_REG, 0, RAX_LETTER);
+        genPush(program->code, PUSH_REG, 0, RCX_LETTER);
 	}
     
-    #define DEF_OPER(op_type, size, bin_code)               \
-            case Op_##op_type:                                \
-                binCodeAppend(code, bin_code, size);         \
-                fprintf(log_file, "Operation: %s\n", bin_code);\
+    #define DEF_OPER(op_type, size, bin_code)                  \
+            case Op_##op_type:                                 \
+                binCodeAppend(code, bin_code, size);           \
+                fprintf(log_file, "OP: %s\n", bin_code);\
                 break;
 
 	if (node->type == Type_OP)
@@ -645,7 +692,7 @@ int readAST(Tree_t* tree, const char* ast_file) {
     return 0;
 }
 
-bin_code_t* binCodeCtor (size_t init_size) {
+bin_code_t* binCodeCtor(size_t init_size) {
     if (init_size == 0) return NULL;
 	
     bin_code_t* bin_code = (bin_code_t*) calloc(1, sizeof(bin_code_t));
@@ -666,7 +713,7 @@ bin_code_t* binCodeCtor (size_t init_size) {
 	return bin_code;
 }
 
-int binCodeDtor  (bin_code_t* bin_code) {
+int binCodeDtor(bin_code_t* bin_code) {
     if (bin_code == NULL) return 1;
 
     free(bin_code->data);
@@ -685,29 +732,42 @@ int binCodeAppend(bin_code_t* bin_code, const char* data, size_t data_size) {
 
         bin_code->data = (char*) realloc(bin_code->data, bin_code->size);
     }
-
+    
     memcpy(bin_code->data + bin_code->data_size, data, data_size);
     bin_code->data_size += data_size; 
+
+#ifdef DEBUG_MODE
+    fprintf(log_file, "MEMCPY HEXDUMP:\n");
+    hexDump(data, data_size, log_file);
+    fprintf(log_file, "code size: %lu\n", bin_code->data_size);
+
+#endif
 
     return 0;
 }
 
 static void genRet(bin_code_t* code) {
     binCodeAppend(code, "\xc3", 1);
+
+#ifdef DEBUG_MODE
+    fprintf(log_file, "RET\n");
+#endif
 }
 
 
 static void genPop(bin_code_t* code,  PopType type, int imm_val,  char reg_val) {
-    #define DEF_POP(type, size, bin_code, code)            \
-            case POP_##type:                                \
-                binCodeAppend(code, bin_code, size);        \
-                code                                          \
-                fprintf(log_file, "Operation: %s\n", bin_code);\
-            break;
+    #define DEF_POP(type, size, bin_code, action)                                      \
+            case POP_##type:                                                           \
+            {                                                                          \
+                fprintf(log_file, "POP_"#type "\n\tIMM: %d\n\tREG: %s\n", imm_val, reg_name[reg_val]); \
+                binCodeAppend(code, bin_code, size);                                   \
+                action;                                                                \
+            break;                                                                     \
+            }
 
     switch(type)
     {
-        #include "gencmd.hpp"
+        #include "genpop.h"
 		default: break;
     }
     
@@ -715,32 +775,36 @@ static void genPop(bin_code_t* code,  PopType type, int imm_val,  char reg_val) 
 }
 
 static void genPush(bin_code_t* code,  PushType type, int imm_val,  char reg_val) {
-    #define DEF_PUSH(type, size, bin_code, code)             \
-            case PUSH_##type:                                \
-                binCodeAppend(code, bin_code, size);         \
-                code                                           \
-                fprintf(log_file, "Operation: %s\n", bin_code); \
-            break;
+#define DEF_PUSH(type, size, bin_code, action)                                  \
+    case PUSH_##type:                                                           \
+    {                                                                           \
+        fprintf(log_file, "PUSH_"#type"\n\tIMM: %d\n\tREG: %s\n", imm_val, reg_name[reg_val]); \
+        binCodeAppend(code, bin_code, size);                                    \
+        action;                                                                 \
+            break;                                                              \
+    }
 
-    switch(type):
+    switch(type)
     {
-        #include "gencmd.hpp"
+        #include "genpush.h"
 		default: break;
     }
-    
+   
     #undef DEF_PUSH
 }
 
 static void genOper(bin_code_t* code, OperationType type) {
-    #define DEF_OPER(op_type, size, bin_code)               \
-            case Op_##op_type:                                \
-                binCodeAppend(code, bin_code, size);         \
-                fprintf(log_file, "Operation: %s\n", bin_code);\
-                break;
+#define DEF_OPER(op_type, size, bin_code)           \
+        case Op_##op_type:                          \
+        {                                           \
+            fprintf(log_file, #op_type "\n");                 \
+            binCodeAppend(code, bin_code, size);    \
+            break;                                  \
+        }
 
     switch (type)
 	{
-        #include "gencmd.hpp"
+        #include "genoper.h"
 		default: break;
     }
 
@@ -748,35 +812,106 @@ static void genOper(bin_code_t* code, OperationType type) {
 }
 
 static void genJump(bin_code_t* code, JumpType type, int shift) {
-    char jump_arg[4] = {};
-    memcpy(jump_arg, &shift, 4);
-
-    #define DEF_JMP(jmp_type, size, bin_code) \
-            case JMP_##jmp_type:               \
-                binCodeAppend(code, bin_code, size);
+    #define DEF_JMP(jmp_type, size, bin_code)                       \
+            case JMP_##jmp_type:                                    \
+            {                                                       \
+                binCodeAppend(code, bin_code, size);                \
+                fprintf(log_file, "JMP_"#jmp_type " %d ", shift);              \
+                break;                                              \
+            }
 
     switch(type)
     {
-        #include "gencmd.hpp"    
+        #include "genjump.h"    
         default:  break;
     }
 
     #undef DEF_JMP
-
-    binCodeAppend(code, jump_arg, 4);
+    
+    binCodeMemcpy(code, code->data_size, &shift, sizeof(int));
 }
 
 static void regenJump(bin_code_t* code, int arg) {
     int shift = code->data_size - arg; 
-    memcpy(code->data + arg, &shift, sizeof(int));
+    binCodeMemcpy(code, arg, &shift, sizeof(int));
+
+#ifdef DEBUG_MODE
+    fprintf(log_file, "REGEN JUMP ARG in %d on %d\n", arg, shift);
+#endif
+}
+
+static void binCodeMemcpy(bin_code_t* code, size_t dest, void* arg, size_t size) {
+    assert(code);
+
+    if (dest == code->data_size) {
+        if (code->size - code->data_size < size) {
+            while (code->size - code->data_size < size) {
+                code->size *= 2;
+            }
+
+            code->data = (char*) realloc(code->data, code->size);
+        }
+
+        code->data_size += size; 
+    }
+
+    memcpy(code->data + dest, arg, size);
+
+#ifdef DEBUG_MODE
+    fprintf(log_file, "MEMCPY HEXDUMP:\n");
+    hexDump(arg, size, log_file);
+    fprintf(log_file, "code size: %lu\n", code->data_size);
+#endif
+
 }
 
 
+void hexDump (const void * addr, const int len, FILE* file) {
+    assert(addr && len && file);
 
+    int index                     = 0;
+    unsigned char buff[PERLINE+1] = {};
+    const unsigned char* pc       = (const unsigned char*) addr;
 
+    for (index = 0; index < len; index++) {
+        if ((index % PERLINE) == 0) {
+            if (index != 0) 
+                fprintf(file, "  %s\n", buff);
+            fprintf(file, "  %04x ", index);
+        }
 
+        fprintf(file, " %02x", pc[index]);
 
+        if ((pc[index] < 0x20) || (pc[index] > 0x7e)) 
+            buff[index % PERLINE] = '.';
+        else
+            buff[index % PERLINE] = pc[index];
+        buff[(index % PERLINE) + 1] = '\0';
+    }
 
+    while ((index % PERLINE) != 0) {
+        fprintf(file, "   ");
+        index++;
+    }
+    fprintf(file, "  %s\n", buff);
+}
+
+static void binCodeRun(bin_code_t* code) {
+    assert(code);
+    
+    if (mprotect(code->data, code->data_size, PROT_EXEC | PROT_READ | PROT_WRITE) == -1) {
+        fprintf(stderr, "troubles with mprotect\n");
+        return;
+    }
+
+    void (* myJIT)(void) = (void (*)(void))(code->data);
+
+    myJIT();
+
+    printf("Done!\n");
+    
+    mprotect(code->data, code->data_size, PROT_READ | PROT_WRITE);
+}
 
 
 

@@ -5,8 +5,8 @@ int main(void)
     system("run/front obj/fuck.ara");
 	system("run/middle");
 	system("run/back");
-    system("run/asm obj/arm.asm obj/bin.txt");
-    system("run/cpu obj/bin.txt");
+    //system("run/asm obj/arm.asm obj/bin.txt");
+    //system("run/cpu obj/bin.txt");
     
     return 0;
 }
