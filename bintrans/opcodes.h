@@ -25,5 +25,12 @@
 #define POP_RDI "\x5f"
 #define POP_RDI_SIZE 1
 
-#define SET_RAM "\x48\xc7\xc0"
-#define SET_RAM_SIZE 3
+#define SET_RAM "\x48\xb8"
+#define SET_RAM_SIZE 2
+
+#define MOVABS_R10_IMM "\x49\xba"
+#define MOVABS_R10_IMM_SIZE 2
+
+#define CALL_R10 "\x41\xff\xd2"
+#define CALL_R10_SIZE 3 
+

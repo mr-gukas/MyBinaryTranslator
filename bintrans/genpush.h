@@ -28,7 +28,7 @@ DEF_PUSH(IMM_REG_MEM, 2, "\x48\x8b",
 {
     reg_val += 0xb8;
          
-    binCodeMemcpy(code, code->data_size, &imm_val, sizeof(int));
     binCodeMemcpy(code, code->data_size, &reg_val, sizeof(char));
+    binCodeMemcpy(code, code->data_size, &imm_val, sizeof(int));
     binCodeAppend(code, "\x57", 1);
 })

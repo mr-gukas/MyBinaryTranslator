@@ -56,7 +56,7 @@ FUNCTIONS:
     6.4 POP [REG+IMM] ((4b + 4b = int) = 8b)
 
     "\x5f" // pop rdi 
-    "\x48\x89\x78\x01" // mov [rax + 1], rdi
+    "\x48\x89\x8\x01" // mov [rax + 1], rdi
 
     "\x48\x89\x7b\x01" // mov [rbx + 1], rdi 
     "\x48\x89\x79\x01" // mov [rcx + 1], rdi
@@ -115,17 +115,6 @@ FUNCTIONS:
              \x8d  // jge
              \x8c  // jl
              \x8e  // jle
-
-
-
-
-
-
-
-
-
-
-
 
 
 

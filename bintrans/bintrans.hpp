@@ -6,8 +6,23 @@
 #include <stdint.h>
 #include <elf.h>
 #include <sys/mman.h>
+#include <limits.h>    
+#include <unistd.h>
+#include <signal.h>
+#include <errno.h>
 
 #define AST_FILE_NAME "obj/standart.txt"
+
+#define SAVEREGS        asm("push %rax\n"    \
+                            "push %rsi\n"    \
+                            "push %rdi\n"    \
+                            "push %rbp\n");
+
+
+#define RESTOREREGS         asm("pop %rbp\n\t"   \
+                                "pop %rdi\n\t"   \
+                                "pop %rsi\n\t"   \
+                                "pop %rax\n\t");
 
 #ifdef DEBUG_MODE
     #define LOG_PRINT(...) fprintf(LOG_FILE, __VA_ARGS__);
@@ -30,9 +45,9 @@
   abort();
 
 
-
-const char reg_name[4][4] = {"RAX", "RCX", "RDX", "RDX"};
-
+const size_t QWORD      = 8;
+const size_t PAGE_SIZE  = 4096;
+const size_t RAM_SIZE   = 256;
 const size_t VAR_COUNT  = 10000;
 const size_t FUNC_COUNT = 10000;
 const size_t POISON_PTR = 31415;
@@ -75,14 +90,16 @@ struct Program_t {
     bin_code_t* code;
     char*       ram_arr;
 
-    int pass;
+    int inMain;
 };
 
 
- const char RAX_LETTER = 0x0;
- const char RBX_LETTER = 0x3; 
- const char RCX_LETTER = 0x1; 
- const char RDX_LETTER = 0x2; 
+const char reg_name[4][4] = {"RAX", "RCX", "RDX", "RDX"};
+
+ const char RAX_MASK = 0x0;
+ const char RBX_MASK = 0x3; 
+ const char RCX_MASK = 0x1; 
+ const char RDX_MASK = 0x2; 
 
 enum PopType {
     POP_REG = 0,
@@ -124,9 +141,9 @@ enum ProgramStatus {
 
 int readAST(Tree_t* tree, const char* ast_file);
 
-bin_code_t* binCodeCtor  (size_t init_size);
+bin_code_t* binCodeCtor();
 
-int binCodeDtor  (bin_code_t* bin_code);
+int binCodeDtor(bin_code_t* bin_code);
 int binCodeAppend(bin_code_t* bin_code, const char* data, size_t data_size);
 
 static void genRet (bin_code_t* code);
