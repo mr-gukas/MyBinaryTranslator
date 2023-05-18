@@ -11,10 +11,20 @@ int main(void)
 	Program_t* program = WriteBinCode(stTree.root);
 //-----------------------------------------------
 // run binary code 
-    binCodeRun(program->code);
+#if TIME_MEASURE_MODE
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    for (int i = 0; i < 100; ++i)
+#endif
+
+        binCodeRun(program->code);
+
+#if TIME_MEASURE_MODE
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    printf ("Время выполнения, мс: %lu\n", std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+#endif
 //-----------------------------------------------
 // end of process
-#ifdef DEBUG_MODE 
+#if DEBUG_MODE 
     endLog();
 #endif
 
@@ -34,7 +44,7 @@ Program_t* WriteBinCode(TreeNode_t* root)
 
 	ParseStatement(program->node, program);
 
-    #ifdef DEBUG_MODE
+    #if DEBUG_MODE
         fprintf(log_file, "FULL DUMP:\n");
         hexDump(program->code->data, program->code->data_size, log_file);
     #endif
@@ -310,7 +320,11 @@ size_t ParseParams(TreeNode_t* node, VarTable_t* table)
 }
 
 void Printf4Translator(int num) {
+#if TEST_MODE
+    printf("%d\n", num);
+#else
     printf("Output: %d\n", num);
+#endif
 }
 
 int ParsePrintf(TreeNode_t* node, Program_t* program) 
@@ -323,7 +337,7 @@ int ParsePrintf(TreeNode_t* node, Program_t* program)
 			UNDEF_VAR(node->left);
 		}
 	    	
-        #ifdef DEBUG_MODE    
+        #if DEBUG_MODE    
             fprintf(log_file, "OUTPUT\n");
         #endif
 
@@ -364,7 +378,7 @@ int ParseScanf(TreeNode_t* node, Program_t* program)
 		
 		int varPos = GetVarPos(node->left, program->tabStk);
 
-        #ifdef DEBUG_MODE
+        #if DEBUG_MODE
             fprintf(log_file, "INPUT\n");
         #endif 
 
@@ -599,7 +613,7 @@ void CountExpression(TreeNode_t* node, Program_t* program)
         genPush(program->code, PUSH_REG, 0, RCX_MASK);
 	}
 
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     #define DEF_OPER(op_type, size, bin_code)                  \
             case Op_##op_type:                                 \
                 binCodeAppend(code, bin_code, size);           \
@@ -754,7 +768,7 @@ int binCodeAppend(bin_code_t* bin_code, const char* data, size_t data_size) {
     memcpy(bin_code->data + bin_code->data_size, data, data_size);
     bin_code->data_size += data_size; 
 
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     fprintf(log_file, "MEMCPY HEXDUMP:\n");
     hexDump(data, data_size, log_file);
     fprintf(log_file, "code size: 0x%lx\n", bin_code->data_size);
@@ -767,14 +781,14 @@ int binCodeAppend(bin_code_t* bin_code, const char* data, size_t data_size) {
 static void genRet(bin_code_t* code) {
     binCodeAppend(code, "\xc3", 1);
 
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     fprintf(log_file, "RET\n");
 #endif
 }
 
 
 static void genPop(bin_code_t* code,  PopType type, int imm_val,  char reg_val) {
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     #define DEF_POP(type, size, bin_code, action)                                      \
             case POP_##type:                                                           \
             {                                                                          \
@@ -804,7 +818,7 @@ static void genPop(bin_code_t* code,  PopType type, int imm_val,  char reg_val) 
 }
 
 static void genPush(bin_code_t* code,  PushType type, int imm_val,  char reg_val) {
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     #define DEF_PUSH(type, size, bin_code, action)                                                 \
         case PUSH_##type:                                                                          \
         {                                                                                          \
@@ -834,7 +848,7 @@ static void genPush(bin_code_t* code,  PushType type, int imm_val,  char reg_val
 }
 
 static void genOper(bin_code_t* code, OperationType type) {
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     #define DEF_OPER(op_type, size, bin_code)       \
         case Op_##op_type:                          \
         {                                           \
@@ -861,7 +875,7 @@ static void genOper(bin_code_t* code, OperationType type) {
 }
 
 static void genJump(bin_code_t* code, JumpType type, int shift) {
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     #define DEF_JMP(jmp_type, size, bin_code)                   \
         case JMP_##jmp_type:                                    \
         {                                                       \
@@ -894,7 +908,7 @@ static void regenJump(bin_code_t* code, int arg) {
     int shift = code->data_size - arg - 4; 
     binCodeMemcpy(code, arg, &shift, sizeof(int));
 
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     fprintf(log_file, "REGEN JUMP ARG in 0x%x on 0x%x\n", arg, shift);
 #endif
 }
@@ -916,7 +930,7 @@ static void binCodeMemcpy(bin_code_t* code, size_t dest, void* arg, size_t size)
 
     memcpy(code->data + dest, arg, size);
 
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
     fprintf(log_file, "MEMCPY HEXDUMP:\n");
     hexDump(arg, size, log_file);
     fprintf(log_file, "code size: 0x%lx\n", code->data_size);
@@ -956,12 +970,15 @@ static void binCodeRun(bin_code_t* code) {
     void (* JIT) (void) = (void (*) (void)) (code->data);
 
     SAVEREGS
-    JIT();
+        JIT();
     RESTOREREGS
 }
 
 void Scanf4Translator(int* num) {
+#ifndef TEST_MODE
     printf("Input: ");
+#endif
+
     scanf("%d", num);
 }
 

@@ -1,5 +1,5 @@
 #include "../../filework/include/filework.h"
-#include "stack.h"
+#include "../include/stack.h"
 #include "../../log/include/LOG.h"
 #include <ctype.h>
 #include <string.h>
@@ -9,12 +9,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-
-#ifdef LOG_MODE
-    FILE* PrintFile = startLog(PrintFile);
-#else
-    FILE* PrintFile = fopen("obj/cpuLog.txt", "w+");
-#endif
+#define TIME_MEASURE_MODE 0
 
 typedef double arg_t;
 

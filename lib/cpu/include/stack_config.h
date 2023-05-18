@@ -1,7 +1,7 @@
 #define CANARY_GUARD 00
 #define HASH_GUARD   00
 
-typedef int Elem_t;
+typedef double Elem_t;
 typedef unsigned long long Canary_t;
 
 

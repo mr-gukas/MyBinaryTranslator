@@ -1,3 +1,4 @@
+#include "../../log/include/LOG.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>

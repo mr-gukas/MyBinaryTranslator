@@ -12,28 +12,31 @@ X86    := lib/bintrans/src/bintrans.cpp lib/bintrans/src/stack.cpp
 SRC := $(TREE) $(FILEW) $(STD) $(LOG)
 
 front:
-	g++ $(CPPFLAGS)	$(FRONT)  $(SRC) run/front
+	g++ $(CPPFLAGS)	$(FRONT)  $(SRC) -o run/front
 
 middle:
-	g++ $(CPPFLAGS)	$(MIDDLE) $(SRC) run/middle
+	g++ $(CPPFLAGS)	$(MIDDLE) $(SRC) -o run/middle
 
 y86_back: 
-	g++ $(CPPFLAGS)	$(Y86)    $(SRC) run/y86_back 
+	g++ $(CPPFLAGS)	$(Y86)    $(SRC) -o run/y86_back 
 
 x86_back:
-	g++ $(CPPFLAGS)	$(X86)    $(SRC) run/x86_back 
+	g++ $(CPPFLAGS)	$(X86)    $(SRC) -o run/x86_back 
 
 cp:
-	g++ $(CPPFLAGS) cpu/cpu.cpp cpu/stack/stack.cpp log/LOG.cpp -o run/cpu
+	g++ $(CPPFLAGS) lib/cpu/src/cpu.cpp lib/cpu/src/stack.cpp $(LOG) -o run/cpu
 	
 asm: 
-	g++ $(CPPFLAGS) cpu/asm.cpp filework/filework.cpp -o run/asm
+	g++ $(CPPFLAGS) lib/cpu/src/asm.cpp $(FILEW) -o run/asm
 
 ast:
 	g++ $(CPPFLAGS) src/ast.cpp -o run/ast 
 
 y86:
-	g++ $(CPPFLAGS) src/y86.cpp -o run/y86 
+	g++ $(CPPFLAGS) src/y86.cpp -o run/y86
+
+unit_test:
+	g++ src/tests.cpp -o run/unit_tests
 
 clean:
 	rm run/* obj/*

@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 
 #define LOG_NAME "logs.htm"
 

@@ -1,0 +1,249 @@
+
+
+---------------------COMMAND LIST---------------------
+
+0000  |  CALL :main       |  11 13A 
+0005  |  HLT              |  00 
+0006  |                   |  
+0006  |  fib:             |  
+0006  |  PUSH [0+RAX]     |  E1 00 01 
+000F  |  PUSH 2           |  21 2
+0018  |  ISBT             |  18 
+0019  |  PUSH 0           |  21 0
+0022  |                   |  
+0022  |  JE :else_0       |  0D 06 
+0027  |  PUSH RAX         |  41 01
+002C  |  PUSH 1           |  21 1
+0035  |  ADD              |  02 
+0036  |  POP RAX          |  49 01
+003B  |                   |  
+003B  |  PUSH [-1+RAX]    |  E1 FFFFFFFF 01 
+0044  |  PUSH 1           |  21 1
+004D  |  SUB              |  03 
+004E  |  //sof            |  
+004E  |  POP [0+RAX]      |  E9 00 01 
+0057  |                   |  
+0057  |  PUSH [-1+RAX]    |  E1 FFFFFFFF 01 
+0060  |  PUSH 2           |  21 2
+0069  |  SUB              |  03 
+006A  |  //fia            |  
+006A  |  POP [1+RAX]      |  E9 01 01 
+0073  |                   |  
+0073  |  PUSH [0+RAX]     |  E1 00 01 
+007C  |                   |  
+007C  |  PUSH RAX         |  41 01
+0081  |  PUSH 2           |  21 2
+008A  |  ADD              |  02 
+008B  |  POP RAX          |  49 01
+0090  |  POP [0+RAX]      |  E9 00 01 
+0099  |                   |  
+0099  |  CALL :fib        |  11 06 
+009E  |                   |  
+009E  |  PUSH RAX         |  41 01
+00A3  |  PUSH 2           |  21 2
+00AC  |  SUB              |  03 
+00AD  |  POP RAX          |  49 01
+00B2  |  PUSH RCX         |  41 03
+00B7  |  PUSH [1+RAX]     |  E1 01 01 
+00C0  |                   |  
+00C0  |  PUSH RAX         |  41 01
+00C5  |  PUSH 2           |  21 2
+00CE  |  ADD              |  02 
+00CF  |  POP RAX          |  49 01
+00D4  |  POP [0+RAX]      |  E9 00 01 
+00DD  |                   |  
+00DD  |  CALL :fib        |  11 06 
+00E2  |                   |  
+00E2  |  PUSH RAX         |  41 01
+00E7  |  PUSH 2           |  21 2
+00F0  |  SUB              |  03 
+00F1  |  POP RAX          |  49 01
+00F6  |  PUSH RCX         |  41 03
+00FB  |  ADD              |  02 
+00FC  |  POP RCX          |  49 03
+0101  |  PUSH RAX         |  41 01
+0106  |  PUSH 1           |  21 1
+010F  |  SUB              |  03 
+0110  |  POP RAX          |  49 01
+0115  |                   |  
+0115  |  RET              |  17 
+0116  |                   |  
+0116  |  PUSH 0           |  21 0
+011F  |  POP RAX          |  49 01
+0124  |                   |  
+0124  |  JMP :if_0        |  0A 06 
+0129  |                   |  
+0129  |  else_0:          |  
+0129  |  PUSH RAX         |  41 01
+012E  |  PUSH 1           |  21 1
+0137  |  ADD              |  02 
+0138  |  POP RAX          |  49 01
+013D  |                   |  
+013D  |  PUSH 1           |  21 1
+0146  |  POP RCX          |  49 03
+014B  |  PUSH RAX         |  41 01
+0150  |  PUSH 1           |  21 1
+0159  |  SUB              |  03 
+015A  |  POP RAX          |  49 01
+015F  |                   |  
+015F  |  RET              |  17 
+0160  |                   |  
+0160  |  PUSH 0           |  21 0
+0169  |  POP RAX          |  49 01
+016E  |                   |  
+016E  |  if_0:            |  
+016E  |                   |  
+016E  |  main:            |  
+016E  |  PUSH 0           |  21 0
+0177  |  //vova           |  
+0177  |  POP [0+RAX]      |  E9 00 01 
+0180  |                   |  
+0180  |  INP              |  07 
+0181  |  POP [0+RAX]      |  E9 00 01 
+018A  |  PUSH [0+RAX]     |  E1 00 01 
+0193  |                   |  
+0193  |  PUSH RAX         |  41 01
+0198  |  PUSH 2           |  21 2
+01A1  |  ADD              |  02 
+01A2  |  POP RAX          |  49 01
+01A7  |  POP [0+RAX]      |  E9 00 01 
+01B0  |                   |  
+01B0  |  CALL :fib        |  11 06 
+01B5  |                   |  
+01B5  |  PUSH RAX         |  41 01
+01BA  |  PUSH 2           |  21 2
+01C3  |  SUB              |  03 
+01C4  |  POP RAX          |  49 01
+01C9  |  PUSH RCX         |  41 03
+01CE  |  //vla            |  
+01CE  |  POP [1+RAX]      |  E9 01 01 
+01D7  |                   |  
+01D7  |  PUSH [1+RAX]     |  E1 01 01 
+01E0  |  OUT              |  06 
+01E1  |  PUSH 0           |  21 0
+01EA  |                   |  
+01EA  |  RET              |  17 
+
+---------------------COMMAND LIST---------------------
+
+0000  |  CALL :main       |  11 16E 
+0005  |  HLT              |  00 
+0006  |                   |  
+0006  |  fib:             |  
+0006  |  PUSH [0+RAX]     |  E1 00 01 
+000F  |  PUSH 2           |  21 2
+0018  |  ISBT             |  18 
+0019  |  PUSH 0           |  21 0
+0022  |                   |  
+0022  |  JE :else_0       |  0D 129 
+0027  |  PUSH RAX         |  41 01
+002C  |  PUSH 1           |  21 1
+0035  |  ADD              |  02 
+0036  |  POP RAX          |  49 01
+003B  |                   |  
+003B  |  PUSH [-1+RAX]    |  E1 FFFFFFFF 01 
+0044  |  PUSH 1           |  21 1
+004D  |  SUB              |  03 
+004E  |  //sof            |  
+004E  |  POP [0+RAX]      |  E9 00 01 
+0057  |                   |  
+0057  |  PUSH [-1+RAX]    |  E1 FFFFFFFF 01 
+0060  |  PUSH 2           |  21 2
+0069  |  SUB              |  03 
+006A  |  //fia            |  
+006A  |  POP [1+RAX]      |  E9 01 01 
+0073  |                   |  
+0073  |  PUSH [0+RAX]     |  E1 00 01 
+007C  |                   |  
+007C  |  PUSH RAX         |  41 01
+0081  |  PUSH 2           |  21 2
+008A  |  ADD              |  02 
+008B  |  POP RAX          |  49 01
+0090  |  POP [0+RAX]      |  E9 00 01 
+0099  |                   |  
+0099  |  CALL :fib        |  11 06 
+009E  |                   |  
+009E  |  PUSH RAX         |  41 01
+00A3  |  PUSH 2           |  21 2
+00AC  |  SUB              |  03 
+00AD  |  POP RAX          |  49 01
+00B2  |  PUSH RCX         |  41 03
+00B7  |  PUSH [1+RAX]     |  E1 01 01 
+00C0  |                   |  
+00C0  |  PUSH RAX         |  41 01
+00C5  |  PUSH 2           |  21 2
+00CE  |  ADD              |  02 
+00CF  |  POP RAX          |  49 01
+00D4  |  POP [0+RAX]      |  E9 00 01 
+00DD  |                   |  
+00DD  |  CALL :fib        |  11 06 
+00E2  |                   |  
+00E2  |  PUSH RAX         |  41 01
+00E7  |  PUSH 2           |  21 2
+00F0  |  SUB              |  03 
+00F1  |  POP RAX          |  49 01
+00F6  |  PUSH RCX         |  41 03
+00FB  |  ADD              |  02 
+00FC  |  POP RCX          |  49 03
+0101  |  PUSH RAX         |  41 01
+0106  |  PUSH 1           |  21 1
+010F  |  SUB              |  03 
+0110  |  POP RAX          |  49 01
+0115  |                   |  
+0115  |  RET              |  17 
+0116  |                   |  
+0116  |  PUSH 0           |  21 0
+011F  |  POP RAX          |  49 01
+0124  |                   |  
+0124  |  JMP :if_0        |  0A 16E 
+0129  |                   |  
+0129  |  else_0:          |  
+0129  |  PUSH RAX         |  41 01
+012E  |  PUSH 1           |  21 1
+0137  |  ADD              |  02 
+0138  |  POP RAX          |  49 01
+013D  |                   |  
+013D  |  PUSH 1           |  21 1
+0146  |  POP RCX          |  49 03
+014B  |  PUSH RAX         |  41 01
+0150  |  PUSH 1           |  21 1
+0159  |  SUB              |  03 
+015A  |  POP RAX          |  49 01
+015F  |                   |  
+015F  |  RET              |  17 
+0160  |                   |  
+0160  |  PUSH 0           |  21 0
+0169  |  POP RAX          |  49 01
+016E  |                   |  
+016E  |  if_0:            |  
+016E  |                   |  
+016E  |  main:            |  
+016E  |  PUSH 0           |  21 0
+0177  |  //vova           |  
+0177  |  POP [0+RAX]      |  E9 00 01 
+0180  |                   |  
+0180  |  INP              |  07 
+0181  |  POP [0+RAX]      |  E9 00 01 
+018A  |  PUSH [0+RAX]     |  E1 00 01 
+0193  |                   |  
+0193  |  PUSH RAX         |  41 01
+0198  |  PUSH 2           |  21 2
+01A1  |  ADD              |  02 
+01A2  |  POP RAX          |  49 01
+01A7  |  POP [0+RAX]      |  E9 00 01 
+01B0  |                   |  
+01B0  |  CALL :fib        |  11 06 
+01B5  |                   |  
+01B5  |  PUSH RAX         |  41 01
+01BA  |  PUSH 2           |  21 2
+01C3  |  SUB              |  03 
+01C4  |  POP RAX          |  49 01
+01C9  |  PUSH RCX         |  41 03
+01CE  |  //vla            |  
+01CE  |  POP [1+RAX]      |  E9 01 01 
+01D7  |                   |  
+01D7  |  PUSH [1+RAX]     |  E1 01 01 
+01E0  |  OUT              |  06 
+01E1  |  PUSH 0           |  21 0
+01EA  |                   |  
+01EA  |  RET              |  17 

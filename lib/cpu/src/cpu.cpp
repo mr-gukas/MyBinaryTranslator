@@ -1,4 +1,5 @@
 #include "../include/cpu.h"
+#include <chrono>
 
 int main(int argc, const char* argv[])
 {   
@@ -18,12 +19,19 @@ int main(int argc, const char* argv[])
     Cpu_t cpu = {};
 
     $$(CpuCtor(&cpu, binary));
-    $$(RunCpu(&cpu));
-    $$(CpuDtor(&cpu, binary));
 
-#ifdef LOG_MODE
-    endLog(PrintFile);
-#endif 
+#if TIME_MEASURE_MODE
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    for (int i = 0; i < 100; ++i)
+#endif
+        RunCpu(&cpu);
+#if TIME_MEASURE_MODE
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    printf ("Время выполнения, мс: %lu\n", std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+#endif
+
+
+    $$(CpuDtor(&cpu, binary));
 
     return 0;
 }
@@ -95,7 +103,7 @@ int RunCpu(Cpu_t* cpu)
 		{\
 			VAR NUM2 = POP;\
             VAR NUM1 = POP;                              \
-			if (NUM2 == NUM1)\
+			if (!DoubleCmp(NUM1, NUM2))\
 			{\
 				$$(GET_JMP_ARG);\
 			}\
@@ -288,8 +296,9 @@ void CpuDump(Cpu_t* cpu, int ip)
     }
 
     printf("\n");
-
+#if DEBUG_MODE
     StackDump(&cpu->stk);
+#endif
 
     printf("                            REGISTERS:\n");
     printf("REG:  VALUE:\n");
@@ -300,7 +309,9 @@ void CpuDump(Cpu_t* cpu, int ip)
     }
 
     printf("--------------------Function call stack--------------------\n");
+#if DEBUG_MODE
     StackDump(&cpu->retStk);
+#endif
 
     printf("                            RAM:\n");
 
@@ -313,4 +324,9 @@ void CpuDump(Cpu_t* cpu, int ip)
     }
 
     printf("--------------------------------------------------------------------------------\n");
+}
+
+int DoubleCmp(double num1, double num2)
+{
+	return (fabs(num1 - num2) > EPS) ? 1 : 0;
 }

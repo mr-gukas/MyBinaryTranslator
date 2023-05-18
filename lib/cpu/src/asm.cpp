@@ -53,7 +53,6 @@ int asmCtor(AsmCmd_t* asmCmd, FILE* source)
         strncpy(asmCmd->labels[index].name, POISON_NAME, LABEL_SIZE);
     }
 
-
     return 0;
 }
 
@@ -120,6 +119,7 @@ int asmMakeArr(AsmCmd_t* asmCmd)
         {   
             LabelAnalyze(cmd, asmCmd, ip); 
         }
+    
         else 
         {
             return 1;

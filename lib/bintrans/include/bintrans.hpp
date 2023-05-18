@@ -8,6 +8,7 @@
 #include <sys/mman.h>
 #include <limits.h>    
 #include <unistd.h>
+#include <chrono>
 
 #define AST_FILE_NAME "obj/standart.txt"
 
@@ -21,6 +22,10 @@
                                 "pop %rdi\n\t"   \
                                 "pop %rsi\n\t"   \
                                 "pop %rax\n\t");
+
+
+#define TIME_MEASURE_MODE 0
+#define TEST_MODE 1
 
 #ifdef DEBUG_MODE
     #define LOG_PRINT(...) fprintf(LOG_FILE, __VA_ARGS__);
