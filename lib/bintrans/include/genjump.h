@@ -1,8 +1,11 @@
-DEF_JMP(JMP, 1, "\xe9")
+DEF_JMP(JMP, 1, "\xe9")                    // jmp
 
-DEF_JMP(CALL, 1, "\xe8")
+DEF_JMP(CALL, 1, "\xe8")                   // call
 
-DEF_JMP(JE,  7, "\x5e\x5f\x48\x39\xf7\x0f\x84")
+DEF_JMP(JE,  7, "\x5e\x5f\x48\x39\xf7\x0f\x84") // 0: pop rsi; 
+                                                // 1: pop rdi; 
+                                                // 2: cmp rsi, rdi; 
+                                                // 5: je
 
 DEF_JMP(JNE, 7, "\x5e\x5f\x48\x39\xf7\x0f\x85")
 
