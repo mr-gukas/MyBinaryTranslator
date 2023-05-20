@@ -10,24 +10,13 @@ int main(void)
 // from AST to binary code  
 	Program_t* program = WriteBinCode(stTree.root);
 //-----------------------------------------------
-// run binary code 
-#if TIME_MEASURE_MODE
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    for (int i = 0; i < 100; ++i)
-#endif
-
-        binCodeRun(program->code);
-
-#if TIME_MEASURE_MODE
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    printf ("Время выполнения, мс: %lu\n", std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
-#endif
+// generate elf file 
+    gen_elf(program->code->data, program->code->size);
 //-----------------------------------------------
 // end of process
 #if DEBUG_MODE 
     endLog();
 #endif
-
     ProgramDtor(program);
     TreeDtor(&stTree);
     free(program);
@@ -43,7 +32,7 @@ Program_t* WriteBinCode(TreeNode_t* root)
 	ProgramCtor(program, root);
 
 	ParseStatement(program->node, program);
-
+    
     #if DEBUG_MODE
         fprintf(log_file, "FULL DUMP:\n");
         hexDump(program->code->data, program->code->data_size, log_file);
@@ -59,7 +48,6 @@ int ProgramCtor(Program_t* program, TreeNode_t* node) {
 	program->node    = node;
 	program->funcArr = FuncArrCtor();
     program->code    = binCodeCtor();
-    program->ram_arr = (char*) aligned_alloc(RAM_SIZE, RAM_SIZE);
 	program->tabStk  = (Stack_t*) calloc(1, sizeof(Stack_t));	
 
 	StackCtor(program->tabStk, 10);
@@ -77,7 +65,6 @@ int ProgramDtor(Program_t* program) {
 	StackDtor  (program->tabStk);	
 	FuncArrDtor(program->funcArr);
     binCodeDtor(program->code);
-    free       (program->ram_arr);
 	free       (program->tabStk);
 
     return OK;
@@ -96,7 +83,7 @@ void ParseStatement(TreeNode_t* node, Program_t* program)
 	if (program->tabStk->size != 0 && (node->parent && node->parent->type != Type_FUNC))
 	{
         genPush(program->code, PUSH_REG, 0,                RAX_MASK); 
-        genPush(program->code, PUSH_IMM, QWORD * oldTable->size, 0);
+        genPush(program->code, PUSH_IMM, QWORD * oldTable->size,  0);
         genOper(program->code, Op_Add);
         genPop (program->code, POP_REG,  0,                RAX_MASK);
 	}
@@ -115,10 +102,28 @@ void ParseStatement(TreeNode_t* node, Program_t* program)
 	{
 		if (curNode->left->type == Type_FUNC && !firstFunc) 
 		{
-            uint64_t ram_addr = (uint64_t) program->ram_arr;
-
             binCodeAppend(program->code, SET_RAM, SET_RAM_SIZE);
-            binCodeMemcpy(program->code, program->code->data_size, &ram_addr, 8);
+            
+            uint64_t addr = ENTRY_POINT + PAGE_SIZE; 
+            binCodeMemcpy(program->code, program->code->data_size, &(addr), 8);
+            
+            uint64_t scanf_buf = ENTRY_POINT + PAGE_SIZE + MEM_SZ + 
+                                 SCANF_SIZE; 
+            
+            binCodeAppend(program->code, SET_SCANF_BUF, SET_SCANF_BUF_SIZE);
+            binCodeMemcpy(program->code, program->code->data_size, &(scanf_buf), 8);
+
+
+            uint64_t printf_buf = ENTRY_POINT + PAGE_SIZE + MEM_SZ + 
+                                  SCANF_SIZE  + SCANF_BUF + PRINTF_SIZE; 
+            
+            binCodeAppend(program->code, SET_PRINTF_BUF, SET_PRINTF_BUF_SIZE);
+            binCodeMemcpy(program->code, program->code->data_size, &(printf_buf), 8);
+
+            uint64_t itoa_buf = printf_buf + PRINTF_BUF;
+            binCodeAppend(program->code, SET_ITOA_BUF, SET_ITOA_BUF_SIZE);
+            binCodeMemcpy(program->code, program->code->data_size, &(itoa_buf), 8);
+
             genJump(program->code, JMP_JMP, 0);
 			firstFunc = 1;
 		}
@@ -163,7 +168,7 @@ int ParseFunc(TreeNode_t* node, Program_t* program)
 	}
     
     if (STR_EQ("main", node->left->name)) {
-        regenJump(program->code, 11);
+        regenJump(program->code, 41);
         program->inMain = 1;
     }
 
@@ -350,7 +355,9 @@ int ParsePrintf(TreeNode_t* node, Program_t* program)
         binCodeAppend(program->code, AND_RSP_FF,     AND_RSP_FF_SIZE);
         binCodeAppend(program->code, MOVABS_R10_IMM, MOVABS_R10_IMM_SIZE);
 
-        uint64_t addr = (uint64_t) ((void *) Printf4Translator);  
+        //uint64_t addr = (uint64_t) ((void *) Printf4Translator); 
+
+        uint64_t addr = ENTRY_POINT + PAGE_SIZE + MEM_SZ + SCANF_SIZE + SCANF_BUF;  
         binCodeMemcpy(program->code, program->code->data_size, &addr, 8);
 
         binCodeAppend(program->code, CALL_R10,    CALL_R10_SIZE);
@@ -390,7 +397,9 @@ int ParseScanf(TreeNode_t* node, Program_t* program)
         binCodeAppend(program->code, MOVABS_R10_IMM, MOVABS_R10_IMM_SIZE);
         
 
-        uint64_t addr = (uint64_t) ((void *) Scanf4Translator);  
+        //uint64_t addr = (uint64_t) ((void *) Scanf4Translator);  
+
+        uint64_t addr = ENTRY_POINT + PAGE_SIZE + MEM_SZ;  
         binCodeMemcpy(program->code, program->code->data_size, &addr, 8);
 
         binCodeAppend(program->code, CALL_R10,    CALL_R10_SIZE);
@@ -574,8 +583,12 @@ int ParseRet(TreeNode_t* node, Program_t* program)
 		curNode = curNode->parent;
 	}
     
-    if (!program->inMain)
+    if (!program->inMain){
 	    CountExpression(node->left,  program);
+    }
+    else {
+        binCodeAppend(program->code, SET_EXIT, SET_EXIT_SIZE);
+    }
 
 	VarTable_t* curTable = GetTableFromStk(program->tabStk, program->tabStk->size - 2);
 	if (isInLocal)

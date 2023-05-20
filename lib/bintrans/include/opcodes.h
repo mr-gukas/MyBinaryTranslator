@@ -25,7 +25,7 @@
 #define POP_RDI "\x5f"
 #define POP_RDI_SIZE 1
 
-#define SET_RAM "\x48\xb8"
+#define SET_RAM "\x48\xb8" // movabs rax, imm
 #define SET_RAM_SIZE 2
 
 #define MOVABS_R10_IMM "\x49\xba"
@@ -33,4 +33,18 @@
 
 #define CALL_R10 "\x41\xff\xd2"
 #define CALL_R10_SIZE 3 
+
+#define SET_PRINTF_BUF  "\x49\xbb" // movabs r11, imm
+#define SET_PRINTF_BUF_SIZE 2 
+
+#define SET_ITOA_BUF "\x49\xbc" // movabs r12, imm
+#define SET_ITOA_BUF_SIZE 2
+
+#define SET_SCANF_BUF "\x49\xbe" // movabs r14, imm
+#define SET_SCANF_BUF_SIZE 2
+
+#define SET_EXIT "\xB8\x01\x00\x00\x00\x31\xDB\xCD\x80" // mov eax, 0; xor ebx, ebx, int 0x80
+#define SET_EXIT_SIZE 9
+
+
 

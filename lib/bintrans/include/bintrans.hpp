@@ -3,6 +3,7 @@
 #include "../../frontend/include/frontend.h"
 #include "../../tree/include/tree.h"
 #include "opcodes.h"
+#include "../../elf/include/genelf.hpp"
 
 #include <stdint.h>
 #include <sys/mman.h>
@@ -91,7 +92,7 @@ struct Program_t {
     size_t funcCount;
     
     bin_code_t* code;
-    char*       ram_arr;
+    int         ram_addr;
 
     int inMain;
 };

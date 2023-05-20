@@ -5,8 +5,9 @@ FRONT  := lib/frontend/src/frontend.cpp
 TREE   := lib/tree/src/tree.cpp
 FILEW  := lib/filework/src/filework.cpp
 STD    := lib/standart/src/standart.cpp
+ELF    := lib/elf/src/genelf.cpp
 MIDDLE := lib/middleend/src/diff.cpp
-Y86    := lib/backend/src/backend.cpp lib/backend/src/stack.cpp
+v86    := lib/backend/src/backend.cpp lib/backend/src/stack.cpp
 X86    := lib/bintrans/src/bintrans.cpp lib/bintrans/src/stack.cpp
 
 SRC := $(TREE) $(FILEW) $(STD) $(LOG)
@@ -17,11 +18,11 @@ front:
 middle:
 	g++ $(CPPFLAGS)	$(MIDDLE) $(SRC) -o run/middle
 
-y86_back: 
-	g++ $(CPPFLAGS)	$(Y86)    $(SRC) -o run/y86_back 
+v86_back: 
+	g++ $(CPPFLAGS)	$(v86)    $(SRC) -o run/v86_back 
 
 x86_back:
-	g++ $(CPPFLAGS)	$(X86)    $(SRC) -o run/x86_back 
+	g++ $(CPPFLAGS)	$(X86) $(ELF) $(SRC) -o run/x86_back 
 
 cp:
 	g++ $(CPPFLAGS) lib/cpu/src/cpu.cpp lib/cpu/src/stack.cpp $(LOG) -o run/cpu
@@ -32,8 +33,11 @@ asm:
 ast:
 	g++ $(CPPFLAGS) src/ast.cpp -o run/ast 
 
-y86:
-	g++ $(CPPFLAGS) src/y86.cpp -o run/y86
+v86:
+	g++ $(CPPFLAGS) src/v86.cpp -o run/v86
+
+x86:
+	g++ $(CPPFLAGS) src/x86.cpp -o run/x86
 
 unit_test:
 	g++ src/tests.cpp -o run/unit_tests
