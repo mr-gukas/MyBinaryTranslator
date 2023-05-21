@@ -1,5 +1,4 @@
 #include "../include/genelf.hpp"
-#include <cstring>
 
 void gen_elf(void* bin_code, size_t size) {
     if (!(bin_code && size)) {
@@ -71,7 +70,7 @@ static void gen_elf_phdr(FILE* elf, size_t code_size) {
 
 static void gen_myscanf (FILE* elf) {
     
-    FILE*  scanf_file = fopen("lib/stdlib/scanf.bin", "r");
+    FILE*  scanf_file = fopen(SCANF_BIN, "r");
     size_t scanf_sz   = fileSize(scanf_file);
 
     unsigned char* buf = (unsigned char*) calloc(scanf_sz + SCANF_BUF, sizeof(unsigned char));
@@ -84,7 +83,7 @@ static void gen_myscanf (FILE* elf) {
 }
 
 static void gen_myprintf (FILE* elf) {
-    FILE* printf_file = fopen ("lib/stdlib/printf.bin", "r");
+    FILE* printf_file = fopen (PRINTF_BIN, "r");
     size_t printf_sz = fileSize (printf_file);
 
     unsigned char* buf = (unsigned char*) calloc(printf_sz + PRINTF_BUF + ITOA_BUF, sizeof(unsigned char));

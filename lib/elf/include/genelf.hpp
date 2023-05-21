@@ -3,8 +3,12 @@
 #include <sys/mman.h>
 #include <malloc.h>
 #include <stdlib.h>
+#include <cstring>
 
 #define ELF_FILE "res/gukas.elf"
+#define SCANF_BIN  "lib/stdlib/scanf.bin"
+#define PRINTF_BIN "lib/stdlib/printf.bin"
+
 
 const size_t PRINTF_SIZE = 0xa8;
 const size_t SCANF_SIZE  = 0xac; 
